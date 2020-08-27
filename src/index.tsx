@@ -4,7 +4,7 @@ import "./assets/index.css";
 import App from "./components/App";
 
 import { WishList } from "./models/WishList";
-import { onSnapshot } from "mobx-state-tree";
+import { getSnapshot } from "mobx-state-tree";
 
 let initialState: any = {
   items: [
@@ -23,15 +23,34 @@ let initialState: any = {
   ],
 };
 
-if (localStorage.getItem("wishlistapp")) {
-  const json: JSON = JSON.parse(localStorage.getItem("wishlistapp") || "{}");
-  if (WishList.is(json)) initialState = json;
+// if (localStorage.getItem("wishlistapp")) {
+//   const json: JSON = JSON.parse(localStorage.getItem("wishlistapp") || "{}");
+//   if (WishList.is(json)) initialState = json;
+// }
+
+let wishList = WishList.create(initialState);
+
+// onSnapshot(wishList, (snapshot) => {
+//   localStorage.setItem("wishlistapp", JSON.stringify(snapshot));
+// });
+
+function renderApp() {
+  ReactDOM.render(<App wishList={wishList} />, document.getElementById("root"));
 }
 
-const wishList = WishList.create(initialState);
+//intial render of the application
+renderApp();
 
-onSnapshot(wishList, (snapshot) => {
-  localStorage.setItem("wishlistapp", JSON.stringify(snapshot));
-});
-
-ReactDOM.render(<App wishList={wishList} />, document.getElementById("root"));
+//hot module reload
+if (module.hot) {
+  module.hot.accept(["./components/App"], () => {
+    // new components
+    renderApp();
+  });
+  module.hot.accept(["./models/WishList"], () => {
+    // new model definitions
+    const snapshot = getSnapshot(wishList);
+    wishList = WishList.create(snapshot);
+    renderApp();
+  });
+}
