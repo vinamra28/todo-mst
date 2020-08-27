@@ -4,8 +4,9 @@ import "./assets/index.css";
 import App from "./components/App";
 
 import { WishList } from "./models/WishList";
+import { onSnapshot } from "mobx-state-tree";
 
-const wishList = WishList.create({
+let initialState: any = {
   items: [
     {
       name: "LEGO Mindstorms EV3",
@@ -20,6 +21,17 @@ const wishList = WishList.create({
         "https://images-na.ssl-images-amazon.com/images/I/51a7xaMpneL._SX329_BO1,204,203,200_.jpg",
     },
   ],
+};
+
+if (localStorage.getItem("wishlistapp")) {
+  const json: JSON = JSON.parse(localStorage.getItem("wishlistapp") || "{}");
+  if (WishList.is(json)) initialState = json;
+}
+
+const wishList = WishList.create(initialState);
+
+onSnapshot(wishList, (snapshot) => {
+  localStorage.setItem("wishlistapp", JSON.stringify(snapshot));
 });
 
 ReactDOM.render(<App wishList={wishList} />, document.getElementById("root"));
