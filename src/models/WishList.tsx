@@ -1,10 +1,4 @@
-import {
-  types,
-  getParent,
-  destroy,
-  getParentOfType,
-  Instance,
-} from "mobx-state-tree";
+import { types, getParent, destroy, cast, Instance } from "mobx-state-tree";
 
 export const WishListItem = types
   .model({
@@ -23,10 +17,8 @@ export const WishListItem = types
       self.image = newImage;
     },
     remove() {
-      getParentOfType(
-        getParentOfType(self, WishListItem),
-        WishListItem
-      ).remove();
+      const wishListParent = getParent<IWishList>(self, 2);
+      wishListParent.remove(cast(self));
     },
   }));
 
@@ -44,7 +36,7 @@ export const WishList = types
     add(item: IWishListItem) {
       self.items.push(item);
     },
-    remove(item: IWishListItem) {
+    remove(item: IWishListItemX) {
       destroy(item);
     },
   }))
@@ -56,3 +48,6 @@ export const WishList = types
       );
     },
   }));
+
+type IWishList = Instance<typeof WishList>;
+type IWishListItemX = Instance<typeof WishListItem>;

@@ -1,22 +1,20 @@
 import React, { Component } from "react";
 
+import WishListView from "./WishListView";
+
 class App extends Component {
+  props: any;
+  constructor(props: any) {
+    super(props);
+    this.props = props;
+  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <h1 className="App-title">WishList</h1>
         </header>
+        <WishListView wishList={this.props.wishList} />
       </div>
     );
   }
