@@ -33,7 +33,7 @@ export const WishList = types
     items: types.optional(types.array(WishListItem), []),
   })
   .actions((self) => ({
-    add(item: IWishListItem) {
+    add(item: any) {
       self.items.push(item);
     },
     remove(item: IWishListItemX) {
