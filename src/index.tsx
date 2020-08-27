@@ -3,39 +3,43 @@ import ReactDOM from "react-dom";
 import "./assets/index.css";
 import App from "./components/App";
 
-import { WishList } from "./models/WishList";
+import { Group } from "./models/Group";
 import { getSnapshot } from "mobx-state-tree";
 
 let initialState: any = {
-  items: [
-    {
-      name: "LEGO Mindstorms EV3",
-      price: 20,
-      image:
-        "https://images-na.ssl-images-amazon.com/images/I/71CpQw%2BufNL._SL1000_.jpg",
+  users: {
+    a342: {
+      id: "a342",
+      name: "Homer",
+      gender: "m",
     },
-    {
-      name: "Miracles - C.S. Lewis",
-      price: 12,
-      image:
-        "https://images-na.ssl-images-amazon.com/images/I/51a7xaMpneL._SX329_BO1,204,203,200_.jpg",
+    "5fc2": {
+      id: "5fc2",
+      name: "Marge",
+      gender: "f",
     },
-  ],
+    "663b": {
+      id: "663b",
+      name: "Bart",
+      gender: "m",
+    },
+    "65aa": {
+      id: "65aa",
+      name: "Maggie",
+      gender: "f",
+    },
+    ba32: {
+      id: "ba32",
+      name: "Lisa",
+      gender: "f",
+    },
+  },
 };
 
-// if (localStorage.getItem("wishlistapp")) {
-//   const json: JSON = JSON.parse(localStorage.getItem("wishlistapp") || "{}");
-//   if (WishList.is(json)) initialState = json;
-// }
-
-let wishList = WishList.create(initialState);
-
-// onSnapshot(wishList, (snapshot) => {
-//   localStorage.setItem("wishlistapp", JSON.stringify(snapshot));
-// });
+let group = Group.create(initialState);
 
 function renderApp() {
-  ReactDOM.render(<App wishList={wishList} />, document.getElementById("root"));
+  ReactDOM.render(<App group={group} />, document.getElementById("root"));
 }
 
 //intial render of the application
@@ -47,10 +51,9 @@ if (module.hot) {
     // new components
     renderApp();
   });
-  module.hot.accept(["./models/WishList"], () => {
-    // new model definitions
-    const snapshot = getSnapshot(wishList);
-    wishList = WishList.create(snapshot);
+  module.hot.accept(["./models/Group"], () => {
+    const snapshot = getSnapshot(group);
+    group = Group.create(snapshot);
     renderApp();
   });
 }
