@@ -37,6 +37,14 @@ let initialState: any = {
 };
 
 let group = Group.create(initialState);
+/**
+ * to see the working of generators
+ * [action] remove
+ * [action] getSuggestions
+ * [flow_spawn] getSuggestions
+ * [flow_resume] getSuggestions
+ * [flow_return] getSuggestions
+ */
 addMiddleware(group, (call, next) => {
   console.log(`[${call.type}] ${call.name}`);
   return next(call);

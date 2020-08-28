@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import { IWishListItem } from "../models/WishList";
 
 class WishListItemEdit extends Component {
   props: any;
