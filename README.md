@@ -4,6 +4,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `npm run dev`
+
+Runs two scripts concurrently ie `npm start` which runs the app in development mode and `npm run jsonserver` runs the json server after reading the [json file](./db.json).
+
 ### `npm start`
 
 Runs the app in the development mode.<br />
