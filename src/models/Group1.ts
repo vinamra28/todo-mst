@@ -1,29 +1,48 @@
-import { types, flow, applySnapshot, onSnapshot } from "mobx-state-tree";
+/**
+ * This file is the replica of Group.ts
+ * In this we will be splitting up into different types
+ */
+import {
+  types,
+  flow,
+  applySnapshot,
+  getSnapshot,
+  onSnapshot,
+} from "mobx-state-tree";
 import { WishList } from "./WishList";
 
-import { createStorable } from "./Storable";
+const UserBase = types.model({
+  id: types.identifier,
+  name: types.string,
+  gender: types.enumeration("gender", ["m", "f"]), //this is shorthand of above
+  wishList: types.optional(WishList, {}),
+  recipient: types.maybe(types.reference(types.late(() => User))),
+});
 
-const User = types.compose(
-  types
-    .model({
-      id: types.identifier,
-      name: types.string,
-      gender: types.enumeration("gender", ["m", "f"]), //this is shorthand of above
-      wishList: types.optional(WishList, {}),
-      recipient: types.maybe(types.reference(types.late(() => User))),
-    })
-    .actions((self) => ({
-      //use of generators
-      getSuggestions: flow(function* getSuggestions() {
-        const response = yield window.fetch(
-          `http://localhost:3001/suggestions_${self.gender}`
-        );
-        const suggestions = yield response.json();
-        self.wishList.items.push(...suggestions);
-      }),
-    })),
-  createStorable("users", "id")
-);
+const User = UserBase.actions((self) => ({
+  //use of generators
+  getSuggestions: flow(function* getSuggestions() {
+    const response = yield window.fetch(
+      `http://localhost:3001/suggestions_${self.gender}`
+    );
+    const suggestions = yield response.json();
+    self.wishList.items.push(...suggestions);
+  }),
+  save: flow(function* save() {
+    try {
+      yield window.fetch(`http://localhost:3001/users/${self.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(getSnapshot(self)),
+      });
+    } catch (error) {
+      console.error("Uh oh, failed to save: ", error);
+    }
+  }),
+  afterCreate() {
+    onSnapshot(self, this.save);
+  },
+}));
 
 export const Group = types
   .model({
