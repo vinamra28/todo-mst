@@ -1,42 +1,36 @@
 import { types, getParent, destroy, cast, Instance } from "mobx-state-tree";
 
-export const WishListItem = types
-  .model({
-    name: types.string,
-    price: types.number,
-    image: "",
-  })
-  .actions((self) => ({
-    changeName(newName: string) {
-      self.name = newName;
-    },
-    changePrice(newPrice: number) {
-      self.price = newPrice;
-    },
-    changeImage(newImage: string) {
-      self.image = newImage;
-    },
-    remove() {
-      const wishListParent = getParent<IWishList>(self, 2);
-      wishListParent.remove(cast(self));
-    },
-  }));
+export const WishListItemBase = types.model("WishListItem", {
+  name: types.string,
+  price: types.number,
+  image: "",
+});
 
-export interface IWishListItem {
-  name: string;
-  price: number;
-  image?: string;
-}
+export const WishListItem = WishListItemBase.actions((self) => ({
+  changeName(newName: string) {
+    self.name = newName;
+  },
+  changePrice(newPrice: number) {
+    self.price = newPrice;
+  },
+  changeImage(newImage: string) {
+    self.image = newImage;
+  },
+  remove() {
+    const wishListParent = getParent<IWishList>(self, 2);
+    wishListParent.remove(cast(self));
+  },
+}));
 
 export const WishList = types
-  .model({
+  .model("WishList", {
     items: types.optional(types.array(WishListItem), []),
   })
   .actions((self) => ({
-    add(item: any) {
+    add(item: IWishListItem) {
       self.items.push(item);
     },
-    remove(item: IWishListItemX) {
+    remove(item: IWishListItem) {
       destroy(item);
     },
   }))
@@ -50,4 +44,4 @@ export const WishList = types
   }));
 
 type IWishList = Instance<typeof WishList>;
-type IWishListItemX = Instance<typeof WishListItem>;
+type IWishListItem = Instance<typeof WishListItemBase>;

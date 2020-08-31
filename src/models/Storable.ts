@@ -1,6 +1,6 @@
 import { types, flow, getSnapshot, onSnapshot } from "mobx-state-tree";
 
-export function createStorable(collection, attribute) {
+export function createStorable(collection: string, attribute: string) {
   return types.model({}).actions((self) => ({
     save: flow(function* save() {
       try {

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import WishListView from "./WishListView";
 import { observer } from "mobx-react";
+import { IUser } from "../models/Group";
 
 class App extends Component {
   props: any;
@@ -22,7 +23,7 @@ class App extends Component {
         <button onClick={group.reload}>Reload</button>
         <select onChange={this.onSelectUser}>
           <option>- Select User -</option>
-          {Array.from(group.users.values()).map((user: any) => (
+          {Array.from(group.users.values()).map((user: IUser) => (
             <option key={user.id} value={user.id}>
               {user.name}
             </option>

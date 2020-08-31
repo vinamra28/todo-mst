@@ -1,11 +1,11 @@
-import { types, flow, applySnapshot, onSnapshot } from "mobx-state-tree";
+import { types, flow, applySnapshot, Instance } from "mobx-state-tree";
 import { WishList } from "./WishList";
 
 import { createStorable } from "./Storable";
 
 const User = types.compose(
   types
-    .model({
+    .model("User", {
       id: types.identifier,
       name: types.string,
       gender: types.enumeration("gender", ["m", "f"]), //this is shorthand of above
@@ -26,13 +26,13 @@ const User = types.compose(
 );
 
 export const Group = types
-  .model({
+  .model("Group", {
     users: types.map(User),
   })
   .actions((self) => {
     //volatile state
     // the state which lives as long as the instance of the group lives
-    let controller: any;
+    let controller: AbortController;
     return {
       //this is lifecycle hook automatically called
       afterCreate() {
@@ -48,7 +48,10 @@ export const Group = types
           const users = yield response.json();
           applySnapshot(
             self.users,
-            users.reduce((base, user) => ({ ...base, [user.id]: user }), {})
+            users.reduce(
+              (base: any, user: { id: any }) => ({ ...base, [user.id]: user }),
+              {}
+            )
           );
           console.log("success");
         } catch (err) {
@@ -98,3 +101,6 @@ export const Group = types
       },
     };
   });
+
+export type IUser = Instance<typeof User>;
+export type IGroup = Instance<typeof Group>;
