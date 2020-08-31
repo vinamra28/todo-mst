@@ -19,6 +19,7 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">WishList</h1>
         </header>
+        <button onClick={group.reload}>Reload</button>
         <select onChange={this.onSelectUser}>
           <option>- Select User -</option>
           {Array.from(group.users.values()).map((user: any) => (
