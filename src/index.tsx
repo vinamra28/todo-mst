@@ -6,37 +6,11 @@ import App from "./components/App";
 import { Group } from "./models/Group";
 import { getSnapshot, addMiddleware } from "mobx-state-tree";
 
-let initialState: any = {
-  users: {
-    a342: {
-      id: "a342",
-      name: "Homer",
-      gender: "m",
-    },
-    "5fc2": {
-      id: "5fc2",
-      name: "Marge",
-      gender: "f",
-    },
-    "663b": {
-      id: "663b",
-      name: "Bart",
-      gender: "m",
-    },
-    "65aa": {
-      id: "65aa",
-      name: "Maggie",
-      gender: "f",
-    },
-    ba32: {
-      id: "ba32",
-      name: "Lisa",
-      gender: "f",
-    },
-  },
-};
+let initialState: any = { users: {} };
 
 let group = Group.create(initialState);
+// we can manually load the data from server by calling the function below
+// group.load();
 /**
  * to see the working of generators
  * [action] remove
